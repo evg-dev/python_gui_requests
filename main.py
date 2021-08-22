@@ -17,7 +17,9 @@ class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
 
+        self.setWindowTitle('Python Gui Requests')
         self.setGeometry(300, 300, 640, 900)
+        self.setFixedSize(640, 900)
         # create a label
         self.label = QLabel(self)
         # self.label.move(0, 20)
@@ -34,11 +36,11 @@ class MainWindow(QMainWindow):
         self.method.addItem("OPTIONS")
 
         self.method.move(50, 50)
-        self.method.resize(70, 30)
+        self.method.resize(100, 30)
         self.method.activated[str].connect(self.on_changed)
 
         self.url = QLineEdit(self)
-        self.url.move(100, 50)
+        self.url.move(150, 50)
         self.url.resize(400, 30)
         self.url.setText(self.default_url)
         # self.method.setMaxLength(40)
@@ -50,13 +52,13 @@ class MainWindow(QMainWindow):
         self.output_headers.setReadOnly(True)
         self.output_headers.setLineWrapMode(QTextEdit.NoWrap)
         self.output_headers.move(0, 100)
-        self.output_headers.resize(600, 400)
+        self.output_headers.resize(640, 400)
 
         self.output_body = QTextEdit(self)
         self.output_body.setReadOnly(True)
         self.output_body.setLineWrapMode(QTextEdit.NoWrap)
         self.output_body.move(0, 500)
-        self.output_body.resize(600, 400)
+        self.output_body.resize(640, 400)
 
         self.send_request_btn = QPushButton('Send Request', self)
         self.send_request_btn.move(500, 50)
@@ -95,14 +97,15 @@ class MainWindow(QMainWindow):
         if method == 'OPTIONS':
             response = r.options(url)
 
-        h = response.headers
-        h = json.dumps(dict(response.headers), sort_keys=True, indent=4)
+        # h = response.headers
         # h = str(h)
         # h = json.loads(h)
         # h = {"name": "Gilbert", "wins": [["straight", "7"], ["one pair", "10"]]}
         # j = json.dumps(h, sort_keys=True, indent=4)
         # print(h)
-        self.output_headers.setPlainText((str(response.headers)))
+        # self.output_headers.setPlainText((str(response.headers)))
+
+        h = json.dumps(dict(response.headers), sort_keys=True, indent=4)
         self.output_headers.setPlainText(h)
 
         self.output_body.setPlainText(response.text)
