@@ -12,6 +12,7 @@ from PyQt5.QtWidgets import QLabel, QApplication, QAction, QSlider, QFileDialog,
 # from PyQt5.QtGui import QPixmap, QImage
 
 class MainWindow(QMainWindow):
+    default_url = 'https://evg-dev.github.io/'
 
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
@@ -23,10 +24,15 @@ class MainWindow(QMainWindow):
         # self.label.resize(640, 480)
 
         self.method = QComboBox(self)
+
         self.method.addItem("GET")
         self.method.addItem("POST")
         self.method.addItem("PUT")
         self.method.addItem("DELETE")
+        self.method.addItem("PATCH")
+        self.method.addItem("HEAD")
+        self.method.addItem("OPTIONS")
+
         self.method.move(50, 50)
         self.method.resize(70, 30)
         self.method.activated[str].connect(self.on_changed)
@@ -34,7 +40,7 @@ class MainWindow(QMainWindow):
         self.url = QLineEdit(self)
         self.url.move(100, 50)
         self.url.resize(400, 30)
-        self.url.setText('https://evg-dev.github.io/')
+        self.url.setText(self.default_url)
         # self.method.setMaxLength(40)
 
         # self.method.setAlignment(Qt.AlignRight)
@@ -52,9 +58,9 @@ class MainWindow(QMainWindow):
         self.output_body.move(0, 500)
         self.output_body.resize(600, 400)
 
-        self.send_request_btn = QPushButton('Request', self)
-        self.send_request_btn.move(590, 50)
-        self.send_request_btn.resize(50, 30)
+        self.send_request_btn = QPushButton('Send Request', self)
+        self.send_request_btn.move(500, 50)
+        self.send_request_btn.resize(90, 30)
         self.send_request_btn.clicked.connect(self.send_request)
 
         self.show()
@@ -65,9 +71,7 @@ class MainWindow(QMainWindow):
         url = self.url.text()
 
         headers = {}
-
         # params.url = url
-
         response = ''
 
         if method == 'GET':
@@ -76,13 +80,28 @@ class MainWindow(QMainWindow):
         if method == 'POST':
             response = r.post(url)
 
+        if method == 'PUT':
+            response = r.put(url)
+
+        if method == 'DELETE':
+            response = r.delete(url)
+
+        if method == 'PATCH':
+            response = r.patch(url)
+
+        if method == 'HEAD':
+            response = r.head(url)
+
+        if method == 'OPTIONS':
+            response = r.options(url)
+
         h = response.headers
         h = json.dumps(dict(response.headers), sort_keys=True, indent=4)
         # h = str(h)
         # h = json.loads(h)
         # h = {"name": "Gilbert", "wins": [["straight", "7"], ["one pair", "10"]]}
         # j = json.dumps(h, sort_keys=True, indent=4)
-        print(h)
+        # print(h)
         self.output_headers.setPlainText((str(response.headers)))
         self.output_headers.setPlainText(h)
 
